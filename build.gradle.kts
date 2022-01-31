@@ -8,6 +8,10 @@ plugins {
 group = "com.veosps.game"
 version = "1.0.0"
 
+springBoot {
+    mainClass.set("com.veosps.game.ApplicationKt")
+}
+
 repositories {
     mavenCentral()
 }
@@ -21,6 +25,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("com.displee:rs-cache-library:6.8.1")
     implementation("io.netty:netty-all:4.1.72.Final")
     implementation("org.bouncycastle:bcprov-jdk16:1.46")
     implementation("com.google.guava:guava:31.0.1-jre")
