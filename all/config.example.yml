@@ -1,0 +1,11 @@
+# Example Config
+name: RuneScape
+majorRevision: 201
+spawnPosition:
+  x: 3235
+  y: 3219
+  z: 0
+environment: dev
+hostAddress: 127.0.0.1
+hostPort: 43594
+dataPath: ./data
