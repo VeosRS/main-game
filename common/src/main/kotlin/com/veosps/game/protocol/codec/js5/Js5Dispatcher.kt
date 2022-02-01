@@ -68,7 +68,7 @@ class Js5Dispatcher(
         val compressionType: Int
         val compressedLength: Int
 
-        if (group == MASTER_INDEX) {
+        if (archive == MASTER_INDEX && group == MASTER_INDEX) {
             data = with(cache.uKeys()) { copyOfRange(0, size - 3) }.toBuffer()
             compressionType = 0
             compressedLength = data.array().size - 5

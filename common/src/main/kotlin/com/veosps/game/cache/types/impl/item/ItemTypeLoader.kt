@@ -5,7 +5,9 @@ import com.veosps.game.cache.GameCache
 import com.veosps.game.cache.buffer.readParameters
 import com.veosps.game.cache.buffer.readString
 import com.veosps.game.cache.types.TypeLoader
+import com.veosps.game.util.BeanScope
 import io.netty.buffer.ByteBuf
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 const val ITEMS_ARCHIVE = 2
@@ -14,10 +16,11 @@ const val ITEMS_GROUP = 10
 private val logger = InlineLogger()
 
 @Component
+@Scope(BeanScope.SCOPE_SINGLETON)
 class ItemTypeLoader(
     override val cache: GameCache,
-    override val types: MutableList<ItemType> = mutableListOf()
-) : TypeLoader<ItemType> {
+    private val types: ItemTypeList
+) : TypeLoader {
 
     override fun load() {
         cache.groups(ITEMS_ARCHIVE, ITEMS_GROUP).forEach { (id, data) ->
@@ -26,7 +29,7 @@ class ItemTypeLoader(
         logger.info { "Loaded ${types.size} item definitions..." }
     }
 
-    override fun ByteBuf.readType(id: Int): ItemType {
+    private fun ByteBuf.readType(id: Int): ItemType {
         val builder = ItemTypeBuilder().apply { this.id = id }
 
         while (isReadable) {
@@ -39,7 +42,7 @@ class ItemTypeLoader(
         return builder.build()
     }
 
-    fun ItemTypeBuilder.readBuffer(instruction: Int, buf: ByteBuf) {
+    private fun ItemTypeBuilder.readBuffer(instruction: Int, buf: ByteBuf) {
         when (instruction) {
             1 -> inventoryModel = buf.readUnsignedShort()
             2 -> name = buf.readString()

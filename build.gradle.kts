@@ -30,8 +30,6 @@ allprojects {
 
     dependencies {
         implementation(kotlin("stdlib"))
-        //implementation("com.google.inject:guice:5.1.0")
-        //implementation("dev.misfitlabs.kotlinguice4:kotlin-guice:1.5.0")
 
         implementation("io.guthix:jagex-store-5:0.4.0") {
             exclude("io.guthix", "jagex-bytebuf")
@@ -48,6 +46,7 @@ allprojects {
 
         implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger-jvm:1.0.3")
         implementation("com.michael-bull.kotlin-result:kotlin-result-jvm:1.1.14")
+        implementation("com.michael-bull.kotlin-retry:kotlin-retry:1.0.9")
 
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
         implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1")
@@ -59,6 +58,7 @@ allprojects {
         implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("org.springframework.boot:spring-boot-starter-data-jpa")
         implementation("org.springframework.boot:spring-boot-starter-jdbc")
+        implementation("org.mindrot:jbcrypt:0.4")
 
         runtimeOnly("com.h2database:h2:2.1.210")
         implementation("com.zaxxer:HikariCP:5.0.1")

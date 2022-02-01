@@ -1,6 +1,6 @@
 package com.veosps.game.cache.types.impl.item
 
-import com.veosps.game.cache.types.DataType
+import com.veosps.game.cache.types.CacheType
 
 data class ItemType(
     override val id: Int,
@@ -58,4 +58,4 @@ data class ItemType(
     val textureReplace: List<Int>,
     val ambient: Int,
     val contrast: Int,
-) : DataType
+) : CacheType

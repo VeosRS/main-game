@@ -1,4 +1,4 @@
-package com.veosps.game.plugins
+package com.veosps.game.plugins.protocol.codec
 
 import com.veosps.game.config.models.GameConfig
 import com.veosps.game.net.handshake.HandshakeHandlerMap

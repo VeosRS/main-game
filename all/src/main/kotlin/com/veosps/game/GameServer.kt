@@ -6,6 +6,7 @@ import com.veosps.game.cache.GameCacheGuthix
 import com.veosps.game.cache.types.TypeLoader
 import com.veosps.game.config.models.GameConfig
 import com.veosps.game.coroutines.IoCoroutineScope
+import com.veosps.game.coroutines.ioCoroutineScope
 import com.veosps.game.net.channel.ClientChannelInitializer
 import com.veosps.game.net.handshake.HandshakeDecoder
 import com.veosps.game.plugin.kotlin.KotlinPluginLoader
@@ -28,18 +29,17 @@ class GameServer(
     private val beanFactory: BeanFactory,
     private val gameConfig: GameConfig,
     private val gameCache: GameCache,
-    private val typeLoaders: List<TypeLoader<*>>,
+    private val typeLoaders: List<TypeLoader>,
     private val pluginLoader: KotlinPluginLoader,
 ) : InitializingBean {
 
-    fun boot() {
+    private fun boot() {
         logger.info { "Starting game server for ${gameConfig.name}..." }
 
         logger.debug { "Loaded config: $gameConfig" }
 
         gameCache.start()
 
-        val ioCoroutineScope = IoCoroutineScope(Dispatchers.IO)
         loadCacheTypes(ioCoroutineScope, typeLoaders)
 
         val plugins = pluginLoader.load()
@@ -73,7 +73,7 @@ class GameServer(
 
 private fun loadCacheTypes(
     ioCoroutineScope: IoCoroutineScope,
-    loaders: List<TypeLoader<*>>
+    loaders: List<TypeLoader>
 ) = runBlocking {
     val jobs = mutableListOf<Deferred<Unit>>()
     loaders.forEach {

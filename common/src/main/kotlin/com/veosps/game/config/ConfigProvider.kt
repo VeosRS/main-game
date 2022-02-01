@@ -1,12 +1,6 @@
 package com.veosps.game.config
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.PropertyAccessor
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.veosps.game.config.models.GameConfig
 import com.veosps.game.config.models.RsaConfig
 import com.veosps.game.util.*
@@ -24,16 +18,10 @@ import java.security.spec.PKCS8EncodedKeySpec
 @Component
 class ConfigProvider {
 
-    private val mapper = ObjectMapper(YAMLFactory())
-        .findAndRegisterModules()
-        .registerKotlinModule()
-        .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-        .enable(SerializationFeature.INDENT_OUTPUT)
-
     @Bean
     @Scope(BeanScope.SCOPE_SINGLETON)
     fun loadGameConfig(): GameConfig {
-        return mapper.readValue("./config.yml".toFile())
+        return yamlMapper.readValue("./config.yml".toFile())
     }
 
     @Bean

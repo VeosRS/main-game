@@ -1,7 +1,5 @@
 package com.veosps.game.cache.types
 
-import io.netty.buffer.ByteBuf
-
-interface DataType {
+interface CacheType {
     val id: Int
 }
