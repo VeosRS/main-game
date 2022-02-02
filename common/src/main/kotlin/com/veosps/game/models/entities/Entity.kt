@@ -1,6 +1,6 @@
 package com.veosps.game.models.entities
 
-import com.veosps.game.models.entities.player.Appearance
+import com.veosps.game.models.entities.player.appearance.Appearance
 import com.veosps.game.protocol.update.mask.UpdateMaskSet
 import com.veosps.game.models.map.Coordinates
 

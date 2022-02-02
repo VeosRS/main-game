@@ -6,7 +6,6 @@ rootProject.name = "veosps-server"
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include("all")
 include("common")
 include("plugins")
 includePlugins(project(":plugins").projectDir.toPath())

@@ -4,12 +4,11 @@ import com.github.michaelbull.logging.InlineLogger
 import com.veosps.game.coroutines.GameCoroutineScope
 import com.veosps.game.dispatch.GameJobDispatcher
 import com.veosps.game.event.EventBus
+import com.veosps.game.event.impl.NpcTimerTrigger
 import com.veosps.game.event.impl.PlayerTimerTrigger
 import com.veosps.game.models.Client
 import com.veosps.game.models.ClientList
-import com.veosps.game.models.entities.mob.Mob
-import com.veosps.game.models.entities.mob.Player
-import com.veosps.game.models.entities.mob.PlayerList
+import com.veosps.game.models.entities.mob.*
 import com.veosps.game.models.world.World
 import com.veosps.game.protocol.update.task.UpdateTaskList
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +20,11 @@ import java.util.concurrent.TimeUnit
 import kotlin.system.measureNanoTime
 
 private val logger = InlineLogger()
+
+const val gameTickDelay = 600
+const val actionsPerCycle = 25
+const val loginsPerCycle = 25
+const val logoutsPerCycle = 10
 
 sealed class GameState {
     object Inactive : GameState()
@@ -34,6 +38,7 @@ class Game(
     private val jobDispatcher: GameJobDispatcher,
     private val updateTaskList: UpdateTaskList,
     private val playerList: PlayerList,
+    private val npcList: NpcList,
     private val clientList: ClientList,
     private val eventBus: EventBus,
     private val world: World
@@ -47,7 +52,7 @@ class Game(
         if (state != GameState.Inactive) {
             error("::start has already been called.")
         }
-        val delay = 600
+        val delay = gameTickDelay
         state = GameState.Active
         coroutineScope.start(delay.toLong())
     }
@@ -71,9 +76,9 @@ class Game(
     }
 
     private suspend fun gameLogic() {
-        clientList.forEach { it.pollActions(25) }
+        clientList.forEach { it.pollActions(actionsPerCycle) }
         playerList.forEach { it?.cycle() }
-        //npcList.forEach { it?.cycle(eventBus) }
+        npcList.forEach { it?.cycle(eventBus) }
         world.queueList.cycle()
         jobDispatcher.executeAll()
         updateTaskList.forEach { it.execute() }
@@ -95,6 +100,11 @@ private fun Client.pollActions(iterations: Int) {
             }
         }
     }
+}
+
+private suspend fun Npc.cycle(eventBus: EventBus) {
+    queueCycle()
+    timerCycle(eventBus)
 }
 
 private suspend fun Player.cycle() {
@@ -133,6 +143,31 @@ private fun Player.timerCycle() {
         }
         try {
             val event = PlayerTimerTrigger(this, key)
+            eventBus.publish(event)
+            /* if the timer was not re-set after event we remove it */
+            if (timers.isNotActive(key)) {
+                iterator.remove()
+            }
+        } catch (t: Throwable) {
+            iterator.remove()
+            logger.error(t) { "Timer event error ($this)" }
+        }
+    }
+}
+
+private fun Npc.timerCycle(eventBus: EventBus) {
+    if (timers.isEmpty()) return
+    val iterator = timers.iterator()
+    while (iterator.hasNext()) {
+        val entry = iterator.next()
+        val key = entry.key
+        val cycles = entry.value
+        if (cycles > 0) {
+            timers.decrement(key)
+            continue
+        }
+        try {
+            val event = NpcTimerTrigger(this, key)
             eventBus.publish(event)
             /* if the timer was not re-set after event we remove it */
             if (timers.isNotActive(key)) {

@@ -57,3 +57,40 @@ class PlayerList(
 
     override fun isEmpty(): Boolean = size == 0
 }
+
+@Component
+@Scope(BeanScope.SCOPE_SINGLETON)
+class NpcList(
+    private val npcs: MutableList<Npc?> = createList(MAX_NPC_COUNT)
+) : List<Npc?> by npcs {
+
+    override val size: Int
+        get() = npcs.count { it != null }
+
+    val indices: IntRange
+        get() = npcs.indices
+
+    val capacity: Int
+        get() = npcs.size
+
+    fun register(npc: Npc): Boolean {
+        val index = npcs.freeIndex()
+        if (index == INVALID_INDEX) {
+            return false
+        }
+        npcs[index] = npc
+        npc.index = index
+        return true
+    }
+
+    fun remove(npc: Npc): Boolean = when {
+        npc.index == INVALID_INDEX -> false
+        npcs[npc.index] != npc -> false
+        else -> {
+            npcs[npc.index] = null
+            true
+        }
+    }
+
+    override fun isEmpty(): Boolean = size == 0
+}

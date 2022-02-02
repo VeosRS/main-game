@@ -22,6 +22,7 @@ import com.google.common.base.MoreObjects
  *
  * @param packed a bit-packed value of the request data.
  */
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class Js5Request(private val packed: Int) {
 
     /**

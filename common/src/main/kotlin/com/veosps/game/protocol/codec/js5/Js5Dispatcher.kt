@@ -17,12 +17,9 @@ package com.veosps.game.protocol.codec.js5
 
 import com.github.michaelbull.logging.InlineLogger
 import com.veosps.game.cache.GameCache
-import com.veosps.game.cache.MASTER_INDEX
-import com.veosps.game.util.toBuffer
-import io.netty.buffer.ByteBuf
+import io.guthix.js5.container.Js5Store
 import io.netty.channel.Channel
 import org.springframework.stereotype.Component
-import kotlin.math.abs
 
 private val logger = InlineLogger()
 
@@ -33,10 +30,10 @@ class Js5Dispatcher(
     private val responses: MutableMap<Js5Request, Js5Response> = mutableMapOf()
 
     fun cacheResponses() {
-        cacheResponse(MASTER_INDEX, MASTER_INDEX)
+        cacheResponse(Js5Store.MASTER_INDEX, Js5Store.MASTER_INDEX)
 
         for (i in 0 until cache.archiveCount) {
-            cacheResponse(MASTER_INDEX, i)
+            cacheResponse(Js5Store.MASTER_INDEX, i)
         }
 
         for (i in 0 until cache.archiveCount) {
@@ -64,20 +61,10 @@ class Js5Dispatcher(
     }
 
     private fun response(archive: Int, group: Int): Js5Response {
-        val data: ByteBuf
-        val compressionType: Int
-        val compressedLength: Int
+        val data = cache.read(archive, group)
 
-        if (archive == MASTER_INDEX && group == MASTER_INDEX) {
-            data = with(cache.uKeys()) { copyOfRange(0, size - 3) }.toBuffer()
-            compressionType = 0
-            compressedLength = data.array().size - 5
-        } else {
-            data = cache.read(archive, group)
-            compressionType = data.readUnsignedByte().toInt()
-            compressedLength = data.readInt()
-        }
-
+        val compressionType = data.readUnsignedByte().toInt()
+        val compressedLength = data.readInt()
         val array = ByteArray(data.writerIndex() - Byte.SIZE_BYTES - Int.SIZE_BYTES)
         data.readBytes(array)
 

@@ -1,6 +1,6 @@
 package com.veosps.game.models.serialization.mappers
 
-import com.veosps.game.cache.types.impl.item.ItemTypeList
+import com.veosps.game.cache.types.item.ItemTypeList
 import com.veosps.game.config.models.GameConfig
 import com.veosps.game.config.models.GameEnvironment
 import com.veosps.game.models.map.Coordinates

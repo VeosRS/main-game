@@ -60,7 +60,7 @@ class ClientPacketStructureMap(
             structures[structure.opcode] = structure
         }
 
-        logger.debug {
+        logger.trace {
             val reference = structureList.first()
             val packet = T::class.simpleName
             val handler = reference.handler?.let { "handler=${it::class.simpleName}, " } ?: ""

@@ -14,7 +14,7 @@ private val logger = InlineLogger()
 
 class XteaLoadEvent : Event
 
-class XteaFileLoader constructor(
+class XteaFileLoader(
     private val config: GameConfig,
     private val mapper: ObjectMapper,
     private val repository: XteaRepository,

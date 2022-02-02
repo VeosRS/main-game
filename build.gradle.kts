@@ -4,14 +4,31 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 plugins {
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
-    id("org.springframework.boot") version "2.6.3" apply false
+    id("org.springframework.boot") version "2.6.3"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.jmailen.kotlinter") version "3.8.0"
 }
 
-project(":all") {
+springBoot {
+    mainClass.set("com.veosps.game.ApplicationKt")
+}
 
-    apply {
+dependencies {
+    implementation(project(":common"))
+    implementation(project(":plugins"))
+    findPlugins(project(":plugins")).forEach {
+        implementation(it)
     }
+}
+
+fun findPlugins(pluginProject: ProjectDependency): List<Project> {
+    val plugins = mutableListOf<Project>()
+    pluginProject.dependencyProject.subprojects.forEach {
+        if (it.buildFile.exists()) {
+            plugins.add(it)
+        }
+    }
+    return plugins
 }
 
 allprojects {
@@ -22,6 +39,18 @@ allprojects {
         plugin("org.jetbrains.kotlin.jvm")
         plugin("io.spring.dependency-management")
         plugin("org.springframework.boot")
+        plugin("org.jmailen.kotlinter")
+    }
+
+    kotlinter {
+        disabledRules = arrayOf(
+            "comment-spacing",
+            "no-wildcard-imports",
+            "final-newline",
+            "indent",
+            "filename",
+            "import-ordering"
+        )
     }
 
     repositories {
@@ -31,14 +60,14 @@ allprojects {
     dependencies {
         implementation(kotlin("stdlib"))
 
-        implementation("io.guthix:jagex-store-5:0.4.0") {
-            exclude("io.guthix", "jagex-bytebuf")
+        implementation("org.rsmod:pathfinder:1.2.4")
+        implementation("io.guthix:js5-filestore:0.5.0") {
+            exclude("io.guthix", "jagex-bytebuf-extensions")
         }
 
         implementation("org.jetbrains.kotlin:kotlin-script-runtime:1.6.10")
         implementation("org.jetbrains.kotlin:kotlin-scripting-common:1.6.10")
 
-        implementation("com.displee:rs-cache-library:6.8.1")
         implementation("io.netty:netty-all:4.1.72.Final")
         implementation("org.bouncycastle:bcprov-jdk16:1.46")
         implementation("com.google.guava:guava:31.0.1-jre")

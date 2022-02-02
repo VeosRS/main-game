@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component
 private val logger = InlineLogger()
 
 @Component
-@Scope(BeanScope.SCOPE_PROTOTYPE)
 class HandshakeDecoder(
     private val handlers: HandshakeHandlerMap
 ) : ByteToMessageDecoder() {
@@ -35,7 +34,7 @@ class HandshakeDecoder(
         val opcode = buffer.readByte().toInt()
         val handler = handlers[opcode]
 
-        if(handler == null) {
+        if (handler == null) {
             ctx.disconnect()
             logger.error { "Handler not found for handshake (opcode=$opcode)" }
             return

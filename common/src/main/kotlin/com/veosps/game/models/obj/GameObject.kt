@@ -1,7 +1,7 @@
 package com.veosps.game.models.obj
 
 import com.google.common.base.MoreObjects
-import com.veosps.game.cache.types.impl.obj.ObjectType
+import com.veosps.game.cache.types.obj.ObjectType
 import com.veosps.game.models.map.Coordinates
 
 class GameObject(

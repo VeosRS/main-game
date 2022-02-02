@@ -6,7 +6,6 @@ import com.veosps.game.protocol.message.ServerPacketStructureMap
 import com.veosps.game.protocol.update.mask.UpdateMaskPacketMap
 import com.veosps.game.util.BeanScope
 import org.springframework.beans.factory.BeanFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 

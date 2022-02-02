@@ -2,6 +2,7 @@ package com.veosps.game.models.ui
 
 import com.google.common.base.MoreObjects
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class UserInterface(val id: Int) {
 
     fun child(child: Int): Component {
@@ -9,6 +10,7 @@ inline class UserInterface(val id: Int) {
     }
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class Component(val packed: Int) {
 
     val interfaceId: Int

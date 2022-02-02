@@ -1,7 +1,7 @@
 package com.veosps.game.models.item
 
 import com.google.common.base.MoreObjects
-import com.veosps.game.cache.types.impl.item.ItemType
+import com.veosps.game.cache.types.item.ItemType
 
 internal const val MAX_ITEM_STACK = Int.MAX_VALUE
 

@@ -2,16 +2,20 @@ package com.veosps.game.protocol.packet.update
 
 import com.veosps.game.protocol.update.mask.UpdateMask
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class BitMask(val packed: Int) : UpdateMask
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class DirectionMask(val angle: Int) : UpdateMask {
     companion object
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class MovementTempMask(val type: Int) : UpdateMask {
     companion object
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class MovementPermMask(val type: Int) : UpdateMask {
     companion object
 }

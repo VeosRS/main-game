@@ -17,6 +17,7 @@ fun Coordinates.wrap(): CoordinatesWrapper {
     return CoordinatesWrapper(x, y, level)
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class Coordinates(val packed: Int) {
 
     val x: Int
@@ -91,6 +92,7 @@ inline class Coordinates(val packed: Int) {
     }
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class Zone(private val packed: Int) {
 
     val x: Int
@@ -154,6 +156,7 @@ inline class Zone(private val packed: Int) {
     }
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class MapSquare(val id: Int) {
 
     val x: Int
@@ -214,6 +217,7 @@ inline class MapSquare(val id: Int) {
     }
 }
 
+@Suppress("INLINE_CLASS_DEPRECATED")
 inline class BuildArea(private val packed: Int) {
 
     val x: Int

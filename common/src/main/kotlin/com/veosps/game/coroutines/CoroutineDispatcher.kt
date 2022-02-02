@@ -11,8 +11,6 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
-val ioCoroutineScope = IoCoroutineScope(Dispatchers.IO)
-
 class IoCoroutineScope(
     override val coroutineContext: CoroutineDispatcher
 ) : CoroutineScope by CoroutineScope(coroutineContext)
@@ -33,6 +31,11 @@ class GameExecutor(
 
 @Component
 class CoroutineProvider {
+
+    @Bean
+    fun ioCoroutineScope(): IoCoroutineScope {
+        return IoCoroutineScope(Dispatchers.IO)
+    }
 
     @Bean
     fun gameCoroutineScope(): GameCoroutineScope {

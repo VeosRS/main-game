@@ -9,12 +9,14 @@ import com.github.michaelbull.retry.policy.plus
 import com.github.michaelbull.retry.retry
 import com.veosps.game.action.ActionBus
 import com.veosps.game.config.models.RsaConfig
-import com.veosps.game.coroutines.ioCoroutineScope
+import com.veosps.game.coroutines.IoCoroutineScope
 import com.veosps.game.dispatch.GameJobDispatcher
 import com.veosps.game.event.EventBus
 import com.veosps.game.event.impl.AccountCreation
 import com.veosps.game.event.impl.ClientRegister
 import com.veosps.game.event.impl.ClientUnregister
+import com.veosps.game.loginsPerCycle
+import com.veosps.game.logoutsPerCycle
 import com.veosps.game.models.Client
 import com.veosps.game.models.ClientList
 import com.veosps.game.models.entities.mob.PlayerList
@@ -63,6 +65,7 @@ class AccountDispatcherProvider(
     private val playerList: PlayerList,
     private val deviceStructures: DevicePacketStructureMap,
     private val gameJobDispatcher: GameJobDispatcher,
+    private val ioCoroutineScope: IoCoroutineScope,
     private val xteaRepository: XteaRepository,
     private val clientSerializer: ClientSerializer,
     private val mapIsolation: MapIsolation,
@@ -83,7 +86,8 @@ class AccountDispatcherProvider(
             deviceStructures = deviceStructures,
             eventBus = eventBus,
             actionBus = actionBus,
-            serializer = clientSerializer
+            serializer = clientSerializer,
+            ioCoroutineScope = ioCoroutineScope
         )
     }
 }
@@ -95,36 +99,18 @@ class AccountDispatcher(
     private val xteas: XteaRepository,
     private val serializer: ClientSerializer,
     private val deviceStructures: DevicePacketStructureMap,
+    private val ioCoroutineScope: IoCoroutineScope,
     private val gameJobDispatcher: GameJobDispatcher,
     private val mapIsolation: MapIsolation,
     private val eventBus: EventBus,
     private val actionBus: ActionBus
 ) {
-    private val gameTickDelay = 600
-    private val actionsPerCycle = 25
-    private val loginsPerCycle = 25
-    private val logoutsPerCycle = 10
-
     private val registerQueue = ConcurrentLinkedQueue<Account>()
     private val unregisterQueue = ConcurrentLinkedQueue<Client>()
 
     fun start() {
         gameJobDispatcher.schedule(::gameCycle)
         logger.debug { "Ready to dispatch incoming login requests" }
-    }
-
-    private fun gameCycle() {
-        for (i in 0 until loginsPerCycle) {
-            val account = registerQueue.poll() ?: break
-            logger.debug { "Register account to game (account=$account)" }
-            login(account)
-        }
-
-        for (i in 0 until logoutsPerCycle) {
-            val client = unregisterQueue.poll() ?: break
-            logger.debug { "Unregister player from game (player=${client.player})" }
-            logout(client)
-        }
     }
 
     fun register(request: LoginRequest) {
@@ -140,6 +126,20 @@ class AccountDispatcher(
                 serializer.serialize(client)
                 unregisterQueue.add(client)
             }
+        }
+    }
+
+    private fun gameCycle() {
+        for (i in 0 until loginsPerCycle) {
+            val account = registerQueue.poll() ?: break
+            logger.debug { "Register account to game (account=$account)" }
+            login(account)
+        }
+
+        for (i in 0 until logoutsPerCycle) {
+            val client = unregisterQueue.poll() ?: break
+            logger.debug { "Unregister player from game (player=${client.player})" }
+            logout(client)
         }
     }
 

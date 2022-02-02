@@ -1,6 +1,6 @@
 package com.veosps.game.models.item.container
 
-import com.veosps.game.cache.types.impl.item.ItemType
+import com.veosps.game.cache.types.item.ItemType
 
 sealed class ItemContainerStackMode {
     object Default : ItemContainerStackMode()

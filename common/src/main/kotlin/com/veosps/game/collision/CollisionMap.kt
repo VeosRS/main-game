@@ -1,8 +1,12 @@
 package com.veosps.game.collision
 
 import com.veosps.game.models.map.Coordinates
+import com.veosps.game.models.world.move.Direction
+import com.veosps.game.models.world.move.translate
 import com.veosps.game.util.BeanScope
-import org.rsmod.game.collision.CollisionTile
+import org.rsmod.pathfinder.collision.CollisionStrategies
+import org.rsmod.pathfinder.collision.CollisionStrategy
+import org.rsmod.pathfinder.flag.CollisionFlag
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -47,4 +51,36 @@ fun CollisionMap.buildFlags(center: Coordinates, size: Int): IntArray {
         }
     }
     return flags
+}
+
+fun CollisionMap.canTraverse(
+    src: Coordinates,
+    dir: Direction,
+    strategy: CollisionStrategy = CollisionStrategies.Normal
+): Boolean {
+    // TODO: support for size2/n
+    val dest = src.translate(dir)
+    val flag = this[dest] ?: 0
+    return when (dir) {
+        Direction.West -> strategy.canMove(flag, CollisionFlag.BLOCK_WEST)
+        Direction.East -> strategy.canMove(flag, CollisionFlag.BLOCK_EAST)
+        Direction.North -> strategy.canMove(flag, CollisionFlag.BLOCK_NORTH)
+        Direction.South -> strategy.canMove(flag, CollisionFlag.BLOCK_SOUTH)
+        Direction.SouthWest ->
+            strategy.canMove(flag, CollisionFlag.BLOCK_SOUTH_WEST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_WEST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_SOUTH)
+        Direction.SouthEast ->
+            strategy.canMove(flag, CollisionFlag.BLOCK_SOUTH_EAST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_EAST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_SOUTH)
+        Direction.NorthWest ->
+            strategy.canMove(flag, CollisionFlag.BLOCK_NORTH_WEST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_WEST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_NORTH)
+        Direction.NorthEast ->
+            strategy.canMove(flag, CollisionFlag.BLOCK_NORTH_EAST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_EAST) &&
+                    strategy.canMove(flag, CollisionFlag.BLOCK_NORTH)
+    }
 }

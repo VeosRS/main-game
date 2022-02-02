@@ -15,6 +15,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 package com.veosps.game.plugin.kotlin
 
+import com.veosps.game.action.ActionBus
+import com.veosps.game.event.EventBus
 import com.veosps.game.plugin.Plugin
 import org.springframework.beans.factory.BeanFactory
 import kotlin.script.experimental.annotations.KotlinScript
@@ -27,8 +29,10 @@ import kotlin.script.experimental.api.defaultImports
     compilationConfiguration = KotlinPluginConfiguration::class
 )
 abstract class KotlinPlugin(
-    injector: BeanFactory
-) : Plugin(injector)
+    injector: BeanFactory,
+    eventBus: EventBus,
+    actionBus: ActionBus
+) : Plugin(injector, eventBus, actionBus)
 
 object KotlinPluginConfiguration : ScriptCompilationConfiguration({
     defaultImports(

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.File
 import java.nio.file.Path
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.veosps.game.models.ui.Component
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import org.springframework.beans.factory.config.ConfigurableBeanFactory
 
 typealias BeanScope = ConfigurableBeanFactory
+typealias UIComponent = Component
 
 fun String.toPath(): Path = Path.of(this)
 fun String.toFile(): File = File(this)

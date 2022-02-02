@@ -2,9 +2,9 @@ package com.veosps.game.protocol.packet
 
 import com.google.common.base.MoreObjects
 import com.veosps.game.action.Action
-import com.veosps.game.cache.types.impl.item.ItemType
-import com.veosps.game.cache.types.impl.npc.NpcType
-import com.veosps.game.cache.types.impl.obj.ObjectType
+import com.veosps.game.cache.types.item.ItemType
+import com.veosps.game.cache.types.npc.NpcType
+import com.veosps.game.cache.types.obj.ObjectType
 import com.veosps.game.models.obj.GameObject
 import com.veosps.game.models.entities.mob.Npc
 import com.veosps.game.models.entities.mob.Player

@@ -89,7 +89,6 @@ interface BitBuf : ReferenceCounted {
      */
     fun setBits(index: Long, amount: Int, value: Int): BitBuf
 
-
     /**
      * Gets a [Boolean] at the current [readerIndex] and increases the [readerIndex] by 1 in this buffer. This method
      * also increases the [ByteBuf.readerIndex] in the underlying [ByteBuf], if required.

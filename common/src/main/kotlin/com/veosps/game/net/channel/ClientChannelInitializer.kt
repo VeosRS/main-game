@@ -19,9 +19,6 @@ import com.github.michaelbull.logging.InlineLogger
 import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
-import io.netty.handler.traffic.GlobalTrafficShapingHandler
-import io.netty.handler.traffic.TrafficCounter
-import java.util.concurrent.Executors
 
 private val logger = InlineLogger()
 
@@ -29,13 +26,8 @@ class ClientChannelInitializer(
     private val handshakeDecoder: () -> ChannelHandler
 ) : ChannelInitializer<SocketChannel>() {
 
-    private val trafficHandler = GlobalTrafficShapingHandler(Executors.newSingleThreadScheduledExecutor(), 0, 0, 1000)
-
-    val trafficStats: TrafficCounter
-        get() = trafficHandler.trafficCounter()
-
-    override fun initChannel(channel: SocketChannel) {
-        logger.debug { "Initialize channel (channel=$channel)" }
-        channel.pipeline().addLast(trafficHandler, handshakeDecoder())
+    override fun initChannel(ch: SocketChannel) {
+        logger.debug { "Initialize channel (channel=$ch)" }
+        ch.pipeline().addLast(handshakeDecoder())
     }
 }
